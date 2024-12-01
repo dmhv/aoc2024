@@ -11,8 +11,8 @@ fun main() {
         rights.add(pair.last())
     }
 
-    lefts.sort()
-    rights.sort()
-
-    lefts.zip(rights).sumOf { (left, right) -> abs(left - right) }.println()
+    lefts.sorted()
+        .zip(rights.sorted())
+        .sumOf { (left, right) -> abs(left - right) }
+        .println()
 }
