@@ -6,7 +6,7 @@ fun main() {
     val (lefts, rights) = input.map { line ->
         val left = line.substringBefore(" ").toInt()
         val right = line.substringAfterLast(" ").toInt()
-        left to right  // creates a Pair (tuple)
+        left to right
     }.unzip()
 
     lefts.sorted()
