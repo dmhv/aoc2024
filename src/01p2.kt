@@ -1,13 +1,13 @@
 fun main() {
     val input = readInput("01")
 
-    val lefts = mutableListOf<Int>()
-    val rights = mutableMapOf<Int, Int>()
-    for (line in input) {
-        val pair = line.split("\\s+".toRegex()).map { it.toInt() }
-        lefts.add(pair.first())
-        rights[pair.last()] = rights[pair.last()]?.plus(1) ?: 1
-    }
+    val (lefts, rights) = input.map { line ->
+        line.split("""\s+""".toRegex()).let {
+            require(it.size == 2) { "Expected two numbers per line, got $it" }
+            it[0].toInt() to it[1].toInt()
+        }
+    }.unzip()
 
-    lefts.sumOf { it * (rights[it] ?: 0) }.println()
+    val frequencies = rights.groupingBy { it }.eachCount()
+    lefts.sumOf { it * (frequencies[it] ?: 0) }.println()
 }

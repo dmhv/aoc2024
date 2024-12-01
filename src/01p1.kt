@@ -3,13 +3,11 @@ import kotlin.math.abs
 fun main() {
     val input = readInput("01")
 
-    val lefts = mutableListOf<Int>()
-    val rights = mutableListOf<Int>()
-    for (line in input) {
-        val pair = line.split("\\s+".toRegex()).map { it.toInt() }
-        lefts.add(pair.first())
-        rights.add(pair.last())
-    }
+    val (lefts, rights) = input.map { line ->
+        val left = line.substringBefore(" ").toInt()
+        val right = line.substringAfterLast(" ").toInt()
+        left to right  // creates a Pair (tuple)
+    }.unzip()
 
     lefts.sorted()
         .zip(rights.sorted())
