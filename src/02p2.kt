@@ -2,7 +2,7 @@ fun main() {
     val input = readInput("02")
 
     val ls = input.map { line ->
-        line.split("""\s+""".toRegex()).map(String::toInt)
+        line.split("""\s+""".toRegex()).map { it.toInt() }
     }
 
     ls.count { l ->
