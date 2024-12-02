@@ -5,14 +5,9 @@ fun main() {
         line.split("""\s+""".toRegex()).map(String::toInt)
     }
 
-    var countValid = 0
-    for (l in ls) {
-        for (i in l.indices) {
-            if (isListValid(l.filterIndexed { index, _ -> index != i })) {
-                countValid++
-                break
-            }
+    ls.count { l ->
+        l.indices.any { i ->
+            isListValid(l.filterIndexed { index, _ -> index != i })
         }
-    }
-    countValid.println()
+    }.println()
 }
