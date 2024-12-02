@@ -7,7 +7,7 @@ fun main() {
 
     ls.count { l ->
         l.indices.any { i ->
-            isListValid(l.filterIndexed { index, _ -> index != i })
+            isListValid(l.filterIndexed { j, _ -> j != i })
         }
     }.println()
 }
