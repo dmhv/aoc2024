@@ -6,7 +6,7 @@ fun main() {
     var result = 0
     var isOn = true
 
-    for (line in input) {
+    input.forEach { line ->
         pat.findAll(line).forEach {
             when (it.value) {
                 "do()" -> isOn = true
