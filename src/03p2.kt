@@ -22,4 +22,3 @@ fun main() {
     }
     result.println()
 }
-
