@@ -1,6 +1,5 @@
 fun main() {
     val input = readInput("03")
-
     val pat = Regex("""mul\((\d{1,3}),(\d{1,3})\)|do\(\)|don't\(\)""")
 
     var result = 0
