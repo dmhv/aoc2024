@@ -1,6 +1,5 @@
 fun main() {
     val input = readInput("04")
-
     val ls = mutableMapOf<Pair<Int, Int>, Char>()
 
     input.forEachIndexed { i, line ->
