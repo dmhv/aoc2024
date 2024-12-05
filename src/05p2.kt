@@ -4,28 +4,31 @@ fun main() {
     val correctUpdates = updates.filter { isUpdateCorrect(it, goesAfter) }
     val incorrectUpdates = updates.filter { !correctUpdates.contains(it) }
 
-    val correctedUpdates = mutableListOf<List<Int>>()
-    for (update in incorrectUpdates) {
-        val upd = update.toMutableList()
+    val correctedUpdates = incorrectUpdates.map {
+        val upd = it.toMutableList()
 
-        var isOrdered = false
-        while (!isOrdered) {
-            isOrdered = true
+        do {
+            var swapped = false
             upd.withIndex().zipWithNext { (i, x), (_, next) ->
-                if (
-                    !goesAfter.getOrDefault(x, setOf()).contains(next) ||
-                    goesAfter.getOrDefault(next, setOf()).contains(x)
-                ) {
+                if (needSwap(x, next, goesAfter)) {
                     upd[i] = upd[i + 1].also { upd[i + 1] = upd[i] }
-                    isOrdered = false
+                    swapped = true
                 }
             }
-        }
-        correctedUpdates.add(upd)
+        } while (swapped)
+        upd
     }
-
     correctedUpdates.sumOf { it[it.size / 2] }.println() // 4480
 }
+
+private fun needSwap(
+    x: Int,
+    next: Int,
+    goesAfter: MutableMap<Int, Set<Int>>
+) =
+    !goesAfter.getOrDefault(x, setOf()).contains(next) ||
+    goesAfter.getOrDefault(next, setOf()).contains(x)
+
 
 private fun isUpdateCorrect(
     update: List<Int>,
