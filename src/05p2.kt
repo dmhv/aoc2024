@@ -9,6 +9,7 @@ private fun correctUpdates(updates: List<List<Int>>, goesAfter: MutableMap<Int, 
     val correctedUpdates = updates.map {
         val upd = it.toMutableList()
 
+        // bubble sort
         do {
             var swapped = false
             upd.withIndex().zipWithNext { (i, x), (_, next) ->
