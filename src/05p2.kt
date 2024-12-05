@@ -11,8 +11,8 @@ fun main() {
         var isOrdered = false
         while (!isOrdered) {
             isOrdered = true
-            upd.withIndex().zipWithNext { (i, x), (_, nx) ->
-                if (!goesAfter[x]!!.contains(nx) || goesAfter[nx]!!.contains(x)) {
+            upd.withIndex().zipWithNext { (i, x), (_, next) ->
+                if (!goesAfter[x]!!.contains(next) || goesAfter[next]!!.contains(x)) {
                     upd[i] = upd[i + 1].also { upd[i + 1] = upd[i] }
                     isOrdered = false
                 }
