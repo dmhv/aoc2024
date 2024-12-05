@@ -9,8 +9,9 @@ private fun isUpdateCorrect(update: List<Int>, goesAfter: Map<Int, Set<Int>>): B
     val seen = mutableSetOf<Int>()
     return update.all { x ->
         val shouldBeAfterX = goesAfter.getOrDefault(x, emptySet())
-        val thisIsFine = shouldBeAfterX.none { it in seen } &&
-                seen.all { z -> x in goesAfter.getOrDefault(z, emptySet()) }
+        val thisIsFine =
+            shouldBeAfterX.none { it in seen } &&
+            seen.all { z -> x in goesAfter.getOrDefault(z, emptySet()) }
         seen.add(x)
         thisIsFine
     }
