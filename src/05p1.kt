@@ -30,12 +30,7 @@ private fun parseInput(input: List<String>): Pair<MutableMap<Int, Set<Int>>, Mut
                 continue
             }
             val (a, b) = line.split("|").map { it.toInt() }.toList()
-
-            if (goesAfter.containsKey(a)) {
-                goesAfter[a] = goesAfter[a]!!.plus(b)
-            } else {
-                goesAfter[a] = setOf(b)
-            }
+            goesAfter[a] = goesAfter.getOrDefault(a, mutableSetOf()).plus(b)
         } else {
             updates.add(line.split(",").map { it.toInt() }.toList())
         }
