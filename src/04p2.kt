@@ -13,8 +13,8 @@ fun main() {
 
     ls.filter {
         it.value == 'A'
-                && it.key.first > 0 && it.key.first < nRow
-                && it.key.second > 0 && it.key.second < nCol
+        && it.key.first > 0 && it.key.first < nRow
+        && it.key.second > 0 && it.key.second < nCol
     }.map { (key, _) ->
         val (i, j) = key
         val d1 = "${ls[Pair(i - 1, j - 1)]}${ls[Pair(i + 1, j + 1)]}"
