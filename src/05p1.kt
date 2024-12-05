@@ -2,7 +2,7 @@ fun main() {
     val input = readInput("05")
     val (goesAfter, updates) = parseInput(input)
     val correctUpdates = updates.filter {isUpdateCorrect(it, goesAfter)}
-    correctUpdates.sumOf { it[it.size / 2] }.println() // 4185
+    correctUpdates.sumOf { it[it.size / 2] }.println()
 }
 
 private fun isUpdateCorrect(
