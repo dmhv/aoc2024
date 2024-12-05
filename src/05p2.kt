@@ -1,82 +1,41 @@
 fun main() {
     val input = readInput("05")
-
     val (goesAfter, updates) = parseInput(input)
-
-    val correctUpdates = mutableListOf<List<Int>>()
-
-    updates.forEach { update ->
-        val seen = mutableSetOf<Int>()
-        var isCorrect = true
-        for ((i, x) in update.withIndex()) {
-            if (!isCorrect) {
-                break
-            }
-            // check "y is after x for each y in goesAfter[x]"
-            val shouldBeAfterX = goesAfter.getOrDefault(x, setOf())
-            for (y in shouldBeAfterX) {
-                if (seen.contains(y)) {
-                    isCorrect = false
-//                    println("$update is NOT correct, as $y came before $x")
-                    break
-                }
-            }
-            // check "x is after each z for z in seen"
-            for (z in seen) {
-                val shouldBeAfterZ = goesAfter.getOrDefault(z, setOf())
-                if (!shouldBeAfterZ.contains(x)) {
-                    isCorrect = false
-//                    println("$update is NOT correct, as $x does not follow $z")
-                }
-            }
-
-            seen.add(x)
-        }
-        if (isCorrect) {
-            correctUpdates.add(update)
-        }
-    }
-
-    val incorrectUpdates = mutableListOf<List<Int>>()
-    for (update in updates) {
-        if (!correctUpdates.contains(update)) {
-            incorrectUpdates.add(update)
-        }
-    }
+    val correctUpdates = updates.filter {isUpdateCorrect(it, goesAfter)}
+    val incorrectUpdates = updates.filter { !correctUpdates.contains(it) }
 
     val correctedUpdates = mutableListOf<List<Int>>()
     for (update in incorrectUpdates) {
-        val thisUpdate = update.toMutableList()
-        val relevantRules = goesAfter.filter {
-            thisUpdate.contains(it.key) || thisUpdate.toSet().intersect(it.value).size > 0
-        }
-//        println("Update: $thisUpdate")
-//        println("Rules: $relevantRules")
+        val upd = update.toMutableList()
 
-        // bubble sort time!
         var isOrdered = false
         while (!isOrdered) {
             isOrdered = true
-            for ((i, x) in thisUpdate.withIndex()) {
-                if (i >= update.size - 1) {
-                    continue
-                }
-                val next = thisUpdate[i + 1]
-                if (!goesAfter[x]!!.contains(next) || goesAfter[next]!!.contains(x)) {
-                    val tmp = thisUpdate[i + 1]
-                    thisUpdate[i + 1] = thisUpdate[i]
-                    thisUpdate[i] = tmp
+            upd.withIndex().zipWithNext { (i, x), (_, nx) ->
+                if (!goesAfter[x]!!.contains(nx) || goesAfter[nx]!!.contains(x)) {
+                    upd[i] = upd[i + 1].also { upd[i + 1] = upd[i] }
                     isOrdered = false
                 }
             }
         }
-
-        println("Seems ordered now: $thisUpdate")
-        correctedUpdates.add(thisUpdate)
-
+        correctedUpdates.add(upd)
     }
 
-    correctedUpdates.sumOf { it[it.size / 2] }.println()
+    correctedUpdates.sumOf { it[it.size / 2] }.println() // 4480
+}
+
+private fun isUpdateCorrect(
+    update: List<Int>,
+    goesAfter: Map<Int, Set<Int>>
+): Boolean {
+    val seen = mutableSetOf<Int>()
+    return update.all { x ->
+        val shouldBeAfterX = goesAfter.getOrDefault(x, emptySet())
+        val thisIsFine = shouldBeAfterX.none { it in seen } &&
+                seen.all { z -> x in goesAfter.getOrDefault(z, emptySet()) }
+        seen.add(x)
+        thisIsFine
+    }
 }
 
 private fun parseInput(input: List<String>): Pair<MutableMap<Int, Set<Int>>, MutableList<List<Int>>> {
@@ -90,12 +49,7 @@ private fun parseInput(input: List<String>): Pair<MutableMap<Int, Set<Int>>, Mut
                 continue
             }
             val (a, b) = line.split("|").map { it.toInt() }.toList()
-
-            if (goesAfter.containsKey(a)) {
-                goesAfter[a] = goesAfter[a]!!.plus(b)
-            } else {
-                goesAfter[a] = setOf(b)
-            }
+            goesAfter[a] = goesAfter.getOrDefault(a, mutableSetOf()).plus(b)
         } else {
             updates.add(line.split(",").map { it.toInt() }.toList())
         }
