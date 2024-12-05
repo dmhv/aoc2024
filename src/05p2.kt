@@ -1,7 +1,7 @@
 fun main() {
     val input = readInput("05")
     val (goesAfter, updates) = parseInput(input)
-    val correctUpdates = updates.filter {isUpdateCorrect(it, goesAfter)}
+    val correctUpdates = updates.filter { isUpdateCorrect(it, goesAfter) }
     val incorrectUpdates = updates.filter { !correctUpdates.contains(it) }
 
     val correctedUpdates = mutableListOf<List<Int>>()
@@ -12,7 +12,10 @@ fun main() {
         while (!isOrdered) {
             isOrdered = true
             upd.withIndex().zipWithNext { (i, x), (_, next) ->
-                if (!goesAfter[x]!!.contains(next) || goesAfter[next]!!.contains(x)) {
+                if (
+                    !goesAfter.getOrDefault(x, setOf()).contains(next) ||
+                    goesAfter.getOrDefault(next, setOf()).contains(x)
+                ) {
                     upd[i] = upd[i + 1].also { upd[i + 1] = upd[i] }
                     isOrdered = false
                 }
