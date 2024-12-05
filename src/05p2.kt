@@ -1,10 +1,12 @@
 fun main() {
     val input = readInput("05")
     val (goesAfter, updates) = parseInput(input)
-    val correctUpdates = updates.filter { isUpdateCorrect(it, goesAfter) }
-    val incorrectUpdates = updates.filter { !correctUpdates.contains(it) }
+    val incorrectUpdates = updates.filter { !isUpdateCorrect(it, goesAfter) }
+    correctUpdates(incorrectUpdates, goesAfter).sumOf { it[it.size / 2] }.println()
+}
 
-    val correctedUpdates = incorrectUpdates.map {
+private fun correctUpdates(updates: List<List<Int>>, goesAfter: MutableMap<Int, Set<Int>>): List<MutableList<Int>> {
+    val correctedUpdates = updates.map {
         val upd = it.toMutableList()
 
         do {
@@ -18,27 +20,19 @@ fun main() {
         } while (swapped)
         upd
     }
-    correctedUpdates.sumOf { it[it.size / 2] }.println() // 4480
+    return correctedUpdates
 }
 
-private fun needSwap(
-    x: Int,
-    next: Int,
-    goesAfter: MutableMap<Int, Set<Int>>
-) =
-    !goesAfter.getOrDefault(x, setOf()).contains(next) ||
-    goesAfter.getOrDefault(next, setOf()).contains(x)
+private fun needSwap(x: Int, next: Int, goesAfter: MutableMap<Int, Set<Int>>): Boolean {
+    return !goesAfter.getOrDefault(x, setOf()).contains(next) || goesAfter.getOrDefault(next, setOf()).contains(x)
+}
 
-
-private fun isUpdateCorrect(
-    update: List<Int>,
-    goesAfter: Map<Int, Set<Int>>
-): Boolean {
+private fun isUpdateCorrect(update: List<Int>, goesAfter: Map<Int, Set<Int>>): Boolean {
     val seen = mutableSetOf<Int>()
     return update.all { x ->
         val shouldBeAfterX = goesAfter.getOrDefault(x, emptySet())
-        val thisIsFine = shouldBeAfterX.none { it in seen } &&
-                seen.all { z -> x in goesAfter.getOrDefault(z, emptySet()) }
+        val thisIsFine =
+            shouldBeAfterX.none { it in seen } && seen.all { z -> x in goesAfter.getOrDefault(z, emptySet()) }
         seen.add(x)
         thisIsFine
     }

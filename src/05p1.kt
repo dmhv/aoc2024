@@ -5,10 +5,7 @@ fun main() {
     correctUpdates.sumOf { it[it.size / 2] }.println()
 }
 
-private fun isUpdateCorrect(
-    update: List<Int>,
-    goesAfter: Map<Int, Set<Int>>
-): Boolean {
+private fun isUpdateCorrect(update: List<Int>, goesAfter: Map<Int, Set<Int>>): Boolean {
     val seen = mutableSetOf<Int>()
     return update.all { x ->
         val shouldBeAfterX = goesAfter.getOrDefault(x, emptySet())
