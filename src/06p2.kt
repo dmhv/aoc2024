@@ -25,19 +25,11 @@ private fun isLooping(guard: Guard, lab: Lab): Boolean {
     val seen = mutableSetOf<Pair<Pair<Int, Int>, Direction>>()
 
     while (true) {
-        val nextPosition = when (guard.direction) {
-            Direction.NORTH -> guard.position.first - 1 to guard.position.second
-            Direction.SOUTH -> guard.position.first + 1 to guard.position.second
-            Direction.WEST -> guard.position.first to guard.position.second - 1
-            Direction.EAST -> guard.position.first to guard.position.second + 1
-        }
-
-        if (nextPosition.first < 0 || nextPosition.first == lab.nRows || nextPosition.second < 0 || nextPosition.second == lab.nCols) {
-            return false
-        }
+        val nextPosition = guard.nextMove()
+        if (outsideOfMap(nextPosition, lab)) return false
         if (seen.contains(Pair(nextPosition, guard.direction))) return true
 
-        val atNextPosition = lab.map[nextPosition]!!
+        val atNextPosition = lab.map.getOrElse(nextPosition) {throw IllegalStateException()}
         when (atNextPosition) {
             '.' -> {
                 guard.position = nextPosition
@@ -47,6 +39,17 @@ private fun isLooping(guard: Guard, lab: Lab): Boolean {
         }
     }
 }
+
+private fun Guard.nextMove() = when (this.direction) {
+    Direction.NORTH -> this.position.first - 1 to this.position.second
+    Direction.SOUTH -> this.position.first + 1 to this.position.second
+    Direction.WEST -> this.position.first to this.position.second - 1
+    Direction.EAST -> this.position.first to this.position.second + 1
+}
+
+private fun outsideOfMap(nextPosition: Pair<Int, Int>, lab: Lab) =
+    nextPosition.first < 0 || nextPosition.first == lab.nRows ||
+            nextPosition.second < 0 || nextPosition.second == lab.nCols
 
 private fun parseInput(input: List<String>): Pair<Guard, Lab> {
     val m = mutableMapOf<Pair<Int, Int>, Char>()
