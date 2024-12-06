@@ -6,7 +6,7 @@ fun main() {
     visited.size.println()
 }
 
-private fun patrol(guard: Guard, lab: Lab): MutableSet<Pair<Int, Int>> {
+fun patrol(guard: Guard, lab: Lab): MutableSet<Pair<Int, Int>> {
     val visited = mutableSetOf<Pair<Int, Int>>()
 
     while (true) {

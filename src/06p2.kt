@@ -4,27 +4,27 @@ fun main() {
 
     val guardInitialPosition = guard.position
     val guardInitialDirection = guard.direction
+    val visited = patrol(guard, lab)
+    visited.remove(guardInitialPosition)
 
     val obstructionsCausingLoops = mutableListOf<Pair<Int, Int>>()
-    for (row in 0 until lab.nRows) {
-        for (col in 0 until lab.nCols) {
-            if (lab.map[row to col] == '#' || guardInitialPosition == row to col) continue
 
-            val newMap = lab.map.toMutableMap()
-            newMap[row to col] = '#'
-            val labWithObstruction = Lab(newMap, lab.nRows, lab.nCols)
-            val looped = isLooping(Guard(guardInitialPosition, guardInitialDirection), labWithObstruction)
-            if (looped) {
-                obstructionsCausingLoops.add(Pair(row, col))
-            }
+    visited.forEach { (row, col) ->
+        val newMap = lab.map.toMutableMap()
+        newMap[row to col] = '#'
+        val labWithObstruction = Lab(newMap, lab.nRows, lab.nCols)
+        val looped = isLooping(Guard(guardInitialPosition, guardInitialDirection), labWithObstruction)
+        if (looped) {
+            obstructionsCausingLoops.add(Pair(row, col))
         }
     }
     obstructionsCausingLoops.size.println()
 }
 
-private fun isLooping(guard: Guard, lab: Lab, maxSteps: Int = 10000): Boolean {
-    var steps = 0
-    while (steps < maxSteps) {
+private fun isLooping(guard: Guard, lab: Lab): Boolean {
+    val seen = mutableSetOf<Pair<Pair<Int, Int>, Direction>>()
+
+    while (true) {
         val nextPosition = when (guard.direction) {
             Direction.NORTH -> guard.position.first - 1 to guard.position.second
             Direction.SOUTH -> guard.position.first + 1 to guard.position.second
@@ -32,24 +32,20 @@ private fun isLooping(guard: Guard, lab: Lab, maxSteps: Int = 10000): Boolean {
             Direction.EAST -> guard.position.first to guard.position.second + 1
         }
 
-        if (
-            nextPosition.first < 0 || nextPosition.first == lab.nRows ||
-            nextPosition.second < 0 || nextPosition.second == lab.nCols
-        ) {
+        if (nextPosition.first < 0 || nextPosition.first == lab.nRows || nextPosition.second < 0 || nextPosition.second == lab.nCols) {
             return false
         }
+        if (seen.contains(Pair(nextPosition, guard.direction))) return true
 
         val atNextPosition = lab.map[nextPosition]!!
         when (atNextPosition) {
             '.' -> {
                 guard.position = nextPosition
-                steps++
+                seen.add(Pair(guard.position, guard.direction))
             }
-
             '#' -> guard.turnRight()
         }
     }
-    return true
 }
 
 private fun parseInput(input: List<String>): Pair<Guard, Lab> {
@@ -70,7 +66,6 @@ private fun parseInput(input: List<String>): Pair<Guard, Lab> {
             } else {
                 m[nr to nc] = c
             }
-
         }
     }
     val lab = Lab(m, m.keys.maxOf { it.first } + 1, m.keys.maxOf { it.second } + 1)
