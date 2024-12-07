@@ -13,7 +13,7 @@ fun main() {
         outer@ for ((i, v) in ce.vs.withIndex()) {
             val newPartials = mutableSetOf<Long>()
             for (p in partials) {
-                for (candidate in setOf(p + v, p * v).minus(0L)) {
+                for (candidate in setOf(p + v, p * v, "$p$v".toLong()).minus(0L)) {
                     if (candidate == ce.result && i == ce.vs.lastIndex) {
                         cesOk.add(ce)
                         break@outer
@@ -26,5 +26,3 @@ fun main() {
     }
     cesOk.sumOf { it.result }.println()
 }
-
-data class CalibrationEquation(val result: Long, val vs: List<Long>)
