@@ -8,30 +8,21 @@ fun main() {
     val maxCol = m.keys.maxOf { it.second }
 
     val antinodes = mutableSetOf<Pair<Int, Int>>()
-    for (c in antennas.keys) {
-        val ants = antennas[c] ?: emptyList()
-        for (i in ants.indices) {
-            for (j in i + 1 until ants.size) {
-                val dRow = ants[j].first - ants[i].first
-                val dCol = ants[j].second - ants[i].second
-                val minusRow = ants[i].first - dRow
-                val minusCol = ants[i].second - dCol
-                val plusRow = ants[j].first + dRow
-                val plusCol = ants[j].second + dCol
+    antennas.values.forEach { ants ->
+        ants.indices.forEach { i ->
+            (i + 1 until ants.size).forEach { j ->
+                val (r1, c1) = ants[i]
+                val (r2, c2) = ants[j]
+                val dRow = r2 - r1
+                val dCol = c2 - c1
 
-                if (minusRow in 0..maxRow && minusCol in 0..maxCol) {
-                    antinodes.add(minusRow to minusCol)
-                }
-                if (plusRow in 0..maxRow && plusCol in 0..maxCol) {
-                    antinodes.add(plusRow to plusCol)
+                listOf(r1 - dRow to c1 - dCol, r2 + dRow to c2 + dCol).forEach { (row, col) ->
+                    if (row in 0..maxRow && col in 0..maxCol) antinodes.add(row to col)
                 }
             }
         }
     }
-
     antinodes.size.println()
-//    val filteredAntinodes = antinodes.filter { m[it] == '.' }
-//    printMap(m, filteredAntinodes)
 }
 
 private fun parseInput(input: List<String>): Pair<MutableMap<Pair<Int, Int>, Char>, MutableMap<Char, MutableList<Pair<Int, Int>>>> {
