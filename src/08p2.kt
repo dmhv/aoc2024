@@ -16,10 +16,12 @@ fun main() {
                 val dRow = r2 - r1
                 val dCol = c2 - c1
 
-                generateSequence(r1 - dRow to c1 - dCol) { (row, col) -> row - dRow to col - dCol }.takeWhile { (row, col) -> row in 0..maxRow && col in 0..maxCol }
+                generateSequence(r1 - dRow to c1 - dCol) { (row, col) -> row - dRow to col - dCol }
+                    .takeWhile { (row, col) -> row in 0..maxRow && col in 0..maxCol }
                     .forEach(antinodes::add)
 
-                generateSequence(r2 + dRow to c2 + dCol) { (row, col) -> row + dRow to col + dCol }.takeWhile { (row, col) -> row in 0..maxRow && col in 0..maxCol }
+                generateSequence(r2 + dRow to c2 + dCol) { (row, col) -> row + dRow to col + dCol }
+                    .takeWhile { (row, col) -> row in 0..maxRow && col in 0..maxCol }
                     .forEach(antinodes::add)
             }
         }
