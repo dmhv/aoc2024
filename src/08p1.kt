@@ -12,12 +12,12 @@ fun main() {
         val ants = antennas[c] ?: emptyList()
         for (i in ants.indices) {
             for (j in i + 1 until ants.size) {
-                val dRow = ants[i].first - ants[j].first
-                val dCol = ants[i].second - ants[j].second
-                val minusRow = ants[i].first + dRow
-                val minusCol = ants[i].second + dCol
-                val plusRow = ants[j].first - dRow
-                val plusCol = ants[j].second - dCol
+                val dRow = ants[j].first - ants[i].first
+                val dCol = ants[j].second - ants[i].second
+                val minusRow = ants[i].first - dRow
+                val minusCol = ants[i].second - dCol
+                val plusRow = ants[j].first + dRow
+                val plusCol = ants[j].second + dCol
 
                 if (minusRow in 0..maxRow && minusCol in 0..maxCol) {
                     antinodes.add(minusRow to minusCol)
