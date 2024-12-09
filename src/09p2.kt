@@ -29,15 +29,9 @@ fun main() {
     }
 
     var checkSum = 0L
-    var i = 0
     for (b in blocks) {
-        if (b.content == -1) {
-            i += b.len() + 1
-        } else {
-            for (foo in b.start..b.end) {
-                checkSum += b.content * i
-                i++
-            }
+        if (b.content != -1)  {
+            checkSum += (b.start..b.end).sumOf { it * b.content.toLong() }
         }
     }
     checkSum.println()
