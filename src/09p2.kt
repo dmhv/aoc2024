@@ -28,14 +28,11 @@ fun main() {
         }
     }
 
-    var checkSum = 0L
-    for (b in blocks) {
-        if (b.content != -1)  {
-            checkSum += (b.start..b.end).sumOf { it * b.content.toLong() }
+    blocks.filter { it.content != -1 }.sumOf { b ->
+        run {
+            (b.start..b.end).sumOf { it * b.content.toLong() }
         }
-    }
-    checkSum.println()
-    check(checkSum == 6360363199987L)
+    }.println()
 }
 
 private fun parseInput(input: String): MutableList<Block> {
