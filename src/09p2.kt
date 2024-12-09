@@ -29,9 +29,7 @@ fun main() {
     }
 
     blocks.filter { it.content != -1 }.sumOf { b ->
-        run {
-            (b.start..b.end).sumOf { it * b.content.toLong() }
-        }
+        run { (b.start..b.end).sumOf { it * b.content.toLong() } }
     }.println()
 }
 
