@@ -1,5 +1,7 @@
 fun main() {
     val input = readInput("09")
+    // in the list below, full blocks are represented by non-negative consecutive integers
+    // while the empty space is represented by the value -1
     val disk = parseInput(input[0])
     var l = 0
     var r = disk.size - 1

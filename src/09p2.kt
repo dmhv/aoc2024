@@ -2,6 +2,10 @@ fun main() {
     val input = readInput("09")
     val blocks = parseInput(input[0])
 
+    // a Block denotes a consecutive disk region filled with Block.content,
+    // from disk address Block.start to disk address Block.end, including both ends
+    // Block.content is either a non-negative integer or -1, which denotes free space
+
     val usedBlocks = blocks.filter { it.content != -1 }
     for (b in usedBlocks.reversed()) {
         val bId = blocks.indexOf(b)
