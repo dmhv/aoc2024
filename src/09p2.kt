@@ -32,7 +32,7 @@ fun main() {
     var i = 0
     for (b in blocks) {
         if (b.content == -1) {
-            for (foo in b.start..b.end) i++
+            i += b.len() + 1
         } else {
             for (foo in b.start..b.end) {
                 checkSum += b.content * i
