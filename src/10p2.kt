@@ -17,23 +17,24 @@ private fun parseInput(input: List<String>): Pair<Map<Cell, Int>, List<Cell>> {
     return Pair(map, heads)
 }
 
+private val DIRECTIONS = listOf(Pair(-1, 0), Pair(0, -1), Pair(1, 0), Pair(0, 1))
+
 private fun bfs(map: Map<Cell, Int>, head: Cell): Int {
-    val queue = ArrayDeque<Cell>()
-    queue.add(head)
+    val queue = ArrayDeque(listOf(head))
     val maxRow = map.maxOf { it.key.row }
     val maxCol = map.maxOf { it.key.col }
 
-    val trailEnds = mutableMapOf<Cell, Int>()
+    val pathCounts = mutableMapOf<Cell, Int>()
     while (!queue.isEmpty()) {
         val curr = queue.removeFirst()
-        for (delta in listOf(Pair(-1, 0), Pair(0, -1), Pair(1, 0), Pair(0, 1))) {
+        for (delta in DIRECTIONS) {
             val next = Cell(curr.row + delta.first, curr.col + delta.second)
             if (next.row in 0..maxRow && next.col in 0..maxCol && map[next]!! - map[curr]!! == 1) {
                 if (map[next]!! == 9) {
-                    if (!trailEnds.containsKey(next)) {
-                        trailEnds[next] = 1
+                    if (!pathCounts.containsKey(next)) {
+                        pathCounts[next] = 1
                     } else {
-                        trailEnds[next] = trailEnds[next]!! + 1
+                        pathCounts[next] = pathCounts[next]!! + 1
                     }
                 } else {
                     queue.add(next)
@@ -41,5 +42,5 @@ private fun bfs(map: Map<Cell, Int>, head: Cell): Int {
             }
         }
     }
-    return trailEnds.values.sumOf { it }
+    return pathCounts.values.sumOf { it }
 }
