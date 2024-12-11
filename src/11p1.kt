@@ -1,7 +1,8 @@
 fun main() {
     val input = readInput("11")
-    var stones = input[0].split(" ").map { it.toULong() }
-
+//    var stones = input[0].split(" ").map { it.toULong() }
+    var stones = listOf(0UL)
+    println("[0]: ${stones}")
     for (i in 1..25) {
         val newStones = mutableListOf<ULong>()
         for (stone in stones) {
