@@ -1,4 +1,3 @@
-import time
 from functools import cache
 
 nums = [1117, 0, 8, 21078, 2389032, 142881, 93, 385]
@@ -18,8 +17,8 @@ def count_stones(stone: int, num_steps: int) -> int:
 if __name__ == "__main__":
     res = 0
     for n in nums:
-        tic = time.time()
-        res += count_stones(n, 75)
-        print(f"[{n}] -> {res}, done in {time.time() - tic:.5f} seconds")
+        this_res = count_stones(n, 75)
+        print(f"[{n}] -> {this_res}")
+        res += this_res
 
     print(f"P2: {res}")
