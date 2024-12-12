@@ -113,9 +113,9 @@ fun countTwoNeighborCorners(ps: Set<Pair<Int, Int>>, p: Pair<Int, Int>, neighbor
         return 0
     } else {
         // we know we have an L shape, if its inside is filled, 1 corner, else 2 corners
-        val rCorner = neighbors.map { it.first }.toSet().minus(r).first()
-        val cCorner = neighbors.map { it.second }.toSet().minus(c).first()
-        return when (rCorner to cCorner in ps) {
+        val rInside = neighbors.map { it.first }.toSet().minus(r).first()
+        val cInside = neighbors.map { it.second }.toSet().minus(c).first()
+        return when (rInside to cInside in ps) {
             true -> 1
             false -> 2
         }
@@ -126,8 +126,7 @@ fun getImmediateNeighbors(ps: Set<Pair<Int, Int>>, p: Pair<Int, Int>): List<Pair
     val neighbors = mutableListOf<Pair<Int, Int>>()
     val (r, c) = p
     for ((dr, dc) in listOf(-1 to 0, 0 to 1, 1 to 0, 0 to -1)) {
-        val nr = r + dr
-        val nc = c + dc
+        val (nr, nc) = r + dr to c + dc
         if ((nr to nc) in ps) neighbors.add(nr to nc)
     }
     return neighbors
