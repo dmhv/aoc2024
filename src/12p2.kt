@@ -56,6 +56,7 @@ private fun bfs(
 private fun Region.perimeter(): Int {
     var total = 0
     for (r in this.points) {
+        // immediate neighbors := the ones to the left/right or above/below
         val neighbors = getImmediateNeighbors(this.points, r)
         total += when (neighbors.size) {
             0 -> 4
