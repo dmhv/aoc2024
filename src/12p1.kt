@@ -19,27 +19,8 @@ fun main() {
         regions.add(Region(plantType, thisRegionPoints))
         toVisit.removeAll(thisRegionPoints.toSet())
     }
-    println("Found ${regions.size} region(s)")
 
-    val regionPerimeters = mutableMapOf<Region, Int>()
-    for (r in regions) {
-        regionPerimeters[r] = r.perimeter()
-        println("Perimeter of $r is ${r.perimeter()}")
-    }
-
-    for (r in regions) {
-        println("$r -> perimeter: ${regionPerimeters[r]}, area: ${r.area()}")
-    }
-    println()
-    println()
-
-    var score = 0
-    for (r in regions) {
-        val thisScore = regionPerimeters[r]!! * r.area()
-        println("Score of $r is $thisScore")
-        score += thisScore
-    }
-    score.println()
+    regions.sumOf { it.area() * it.perimeter() }.println()
 }
 
 private fun bfs(
