@@ -20,23 +20,7 @@ fun main() {
         toVisit.removeAll(thisRegionPoints.toSet())
     }
 
-    val regionPerimeters = mutableMapOf<Region, Int>()
-    for (r in regions) {
-        regionPerimeters[r] = r.perimeter()
-    }
-
-    for (r in regions) {
-        println("$r -> perimeter: ${regionPerimeters[r]}, area: ${r.area()}")
-    }
-    println()
-
-    var score = 0
-    for (r in regions) {
-        val thisScore = regionPerimeters[r]!! * r.area()
-        println("Score of $r is $thisScore")
-        score += thisScore
-    }
-    println("Total price is $score")
+    regions.sumOf { it.area() * it.perimeter() }.println()
 }
 
 private fun bfs(
