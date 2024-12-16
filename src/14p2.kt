@@ -2,7 +2,7 @@ private const val MAP_WIDTH = 101
 private const val MAP_HEIGHT = 103
 
 fun main() {
-    val input = readInput("14")
+    val input = readInput("142")
     val robots = mutableListOf<Robot>()
     for (line in input) {
         val (p, v) = line.split(" ")
@@ -11,27 +11,22 @@ fun main() {
         robots.add(Robot(x, y, vx, vy))
     }
 
-    // I arrived to these specific coordinates by first looking for frames with unusually high
-    // column counts, trying to find the trunk of the tree - but probably found the frame around it :)
-    val x0 = 35
-    val x1 = 66
-    val y0 = 30
-    val y1 = 62
+    val stepToCheckSum = mutableMapOf<Int, Long>()
 
-    for (step in 1..300_000) {
+    for (step in 1..10_000) {
         for (robot in robots) {
             robot.move()
         }
-        val countX0 = robots.count { it.x == x0 && it.y in y0..y1 }
-        val countX1 = robots.count { it.x == x1 && it.y in y0..y1 }
-        val countY0 = robots.count { it.y == y0 && it.x in x0..x1 }
-        val countY1 = robots.count { it.y == y1 && it.x in x0..x1 }
-        val cnt = countX0 + countX1 + countY0 + countY1
-        if (cnt > 60) {
-            printMap(robots)
-            println("..@STEP NUMBER $step")
-        }
+        val topLeftQuadrantCount = robots.count { it.x < MAP_WIDTH / 2 && it.y < MAP_HEIGHT / 2 }
+        val topRightQuadrantCount = robots.count { it.x > MAP_WIDTH / 2 && it.y < MAP_HEIGHT / 2 }
+        val bottomLeftQuadrantCount = robots.count { it.x < MAP_WIDTH / 2 && it.y > MAP_HEIGHT / 2 }
+        val bottomRightQuadrantCount = robots.count { it.x > MAP_WIDTH / 2 && it.y > MAP_HEIGHT / 2 }
+        val checkSum = (topLeftQuadrantCount.toLong() * topRightQuadrantCount * bottomLeftQuadrantCount * bottomRightQuadrantCount)
+        stepToCheckSum[step] = checkSum
     }
+
+    stepToCheckSum.values.sorted().take(10).println()
+    stepToCheckSum.filter { it.value == 95830020L }.println()
 }
 
 private fun printMap(robots: MutableList<Robot>) {
