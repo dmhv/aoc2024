@@ -1,7 +1,6 @@
 import java.lang.IllegalStateException
 import java.util.*
 import kotlin.Comparator
-import kotlin.math.absoluteValue
 
 fun main() {
     val input = readInput("16")
@@ -30,8 +29,7 @@ fun main() {
             reachedEnd.add(Triple(curr, dir, steps))
         }
 
-        val neighbors = getNeighbors(curr, map)
-        for (neighbor in neighbors) {
+        for (neighbor in getNeighbors(curr, map)) {
             val nextDirection = computeDirection(neighbor, curr)
             if (!visited.contains(neighbor to nextDirection)) {
                 if (nextDirection == dir) {
@@ -49,15 +47,13 @@ fun main() {
 private fun computeDirection(self: Loc, other: Loc): Direction {
     val deltaRow = self.r - other.r
     val deltaCol = self.c - other.c
-    check(
-        (deltaRow.absoluteValue == 1 && deltaCol.absoluteValue == 0)
-                || (deltaRow.absoluteValue == 0 && deltaCol.absoluteValue == 1)
-    )
-    if (deltaRow == -1) return Direction.NORTH
-    if (deltaRow == 1) return Direction.SOUTH
-    if (deltaCol == -1) return Direction.WEST
-    if (deltaCol == 1) return Direction.EAST
-    throw IllegalStateException("Dunno where we going mate, $deltaRow, $deltaCol")
+    return when (deltaRow to deltaCol) {
+        -1 to 0 -> Direction.NORTH
+        1 to 0 -> Direction.SOUTH
+        0 to -1 -> Direction.WEST
+        0 to 1 -> Direction.EAST
+        else -> throw IllegalStateException("Dunno where we going mate, $deltaRow, $deltaCol")
+        }
 }
 
 private fun getNeighbors(cell: Loc, map: Map<Loc, Char>): List<Loc> {
