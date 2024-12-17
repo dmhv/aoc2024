@@ -24,27 +24,22 @@ fun main() {
         var weThereYet = false
         val (prefixList, _) = queue.remove()
         for (v in (0..7)) {
-            val foo = prefixList.withIndex().sumOf { (i, v) -> v * 8L.pow(i + 1L) }
-            A = foo + v
-            val out = run(program)
-            val first = out[0]
+            val sumOfPowers = prefixList.withIndex().sumOf { (i, v) -> v * 8L.pow(i + 1L) }
+            A = sumOfPowers + v
+            val output = run(program)
+            val first = output.first()
             if (first == program.reversed()[prefixList.size]) {
-                if (prefixList.size == program.size - 1) {
-                    weThereYet = true
-                }
-                println("$v -> ${out.joinToString(",")}")
+                if (prefixList.size == program.size - 1) weThereYet = true
                 val newPrefixList = mutableListOf(v)
                 newPrefixList.addAll(prefixList)
-                println("Adding ${newPrefixList to foo + v}")
-                queue.add(newPrefixList to foo + v)
+                queue.add(newPrefixList to sumOfPowers + v)
             }
         }
-        if (weThereYet) {
-            break@outer
-        }
+        if (weThereYet) break@outer
     }
 
-    queue.filter { it.first.size == 16 }.minBy { it.second }.println()
+    val ans = queue.filter { it.first.size == 16 }.minBy { it.second }
+    ans.println()
 }
 
 private fun run(program: List<Long>): MutableList<Long> {
