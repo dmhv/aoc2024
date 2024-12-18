@@ -12,8 +12,8 @@ fun main() {
     var end = input.indices.last()
     while (start < end) {
         val mid = (end + start) / 2
-        val maze = parseInput(input, mid)
-        when (foundPath(maze, Cell(0, 0))) {
+        val byteLocations = parseInput(input, mid)
+        when (foundPath(byteLocations, Cell(0, 0))) {
             true -> start = mid + 1
             false -> end = mid
         }
@@ -22,15 +22,15 @@ fun main() {
 }
 
 private fun parseInput(input: List<String>, bytesToRead: Int): Set<Cell> {
-    val walls = mutableSetOf<Cell>()
+    val byteLocations = mutableSetOf<Cell>()
     var cnt = 0
     for (line in input) {
         val (c, r) = line.split(",").map { it.toInt() }
-        walls.add(Cell(r, c))
+        byteLocations.add(Cell(r, c))
         cnt++
         if (cnt == bytesToRead) break
     }
-    return walls
+    return byteLocations
 }
 
 private fun foundPath(walls: Set<Cell>, head: Cell): Boolean {
