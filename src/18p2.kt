@@ -1,15 +1,24 @@
+private val DIRECTIONS = listOf(Pair(-1, 0), Pair(0, -1), Pair(1, 0), Pair(0, 1))
+private const val MAX_ROW = 70
+private const val MAX_COL = 70
+private val END = Cell(MAX_ROW, MAX_COL)
+private const val NUM_BYTES = 1024
+
 fun main() {
     val input = readInput("18")
-    var maze = parseInput(input, NUM_BYTES)
-    var foundPath = bfs(maze, Cell(0, 0))
 
-    var numBytesToFall = NUM_BYTES
-    while (foundPath) {
-        numBytesToFall++
-        maze = parseInput(input, numBytesToFall)
-        foundPath = bfs(maze, Cell(0, 0))
+    // using binary search to find the last dropping byte that does not block the path
+    var start = NUM_BYTES + 1
+    var end = input.indices.last()
+    while (start < end) {
+        val mid = (end + start) / 2
+        val maze = parseInput(input, mid)
+        when (foundPath(maze, Cell(0, 0))) {
+            true -> start = mid + 1
+            false -> end = mid
+        }
     }
-    input[numBytesToFall - 1].println()
+    input[end - 1].println()
 }
 
 private fun parseInput(input: List<String>, bytesToRead: Int): Set<Cell> {
@@ -24,13 +33,7 @@ private fun parseInput(input: List<String>, bytesToRead: Int): Set<Cell> {
     return walls
 }
 
-private val DIRECTIONS = listOf(Pair(-1, 0), Pair(0, -1), Pair(1, 0), Pair(0, 1))
-private const val MAX_ROW = 70
-private const val MAX_COL = 70
-private val END = Cell(MAX_ROW, MAX_COL)
-private const val NUM_BYTES = 1024
-
-private fun bfs(walls: Set<Cell>, head: Cell): Boolean {
+private fun foundPath(walls: Set<Cell>, head: Cell): Boolean {
     val queue = ArrayDeque(listOf(head to 0))
     val visited = mutableSetOf<Cell>()
     while (!queue.isEmpty()) {
