@@ -1,3 +1,9 @@
+private val DIRECTIONS = listOf(Pair(-1, 0), Pair(0, -1), Pair(1, 0), Pair(0, 1))
+private const val MAX_ROW = 70
+private const val MAX_COL = 70
+private val END = Cell(MAX_ROW, MAX_COL)
+private const val NUM_BYTES = 1024
+
 fun main() {
     val input = readInput("18")
     val byteLocations = parseInput(input)
@@ -15,12 +21,6 @@ private fun parseInput(input: List<String>): Set<Cell> {
     }
     return byteLocations
 }
-
-private val DIRECTIONS = listOf(Pair(-1, 0), Pair(0, -1), Pair(1, 0), Pair(0, 1))
-private const val MAX_ROW = 70
-private const val MAX_COL = 70
-private val END = Cell(MAX_ROW, MAX_COL)
-private const val NUM_BYTES = 1024
 
 private fun shortestPathLength(byteLocations: Set<Cell>, head: Cell): Int {
     val queue = ArrayDeque(listOf(head to 0))
