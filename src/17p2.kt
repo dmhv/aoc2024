@@ -33,13 +33,13 @@ fun main() {
                 val newPrefixList = mutableListOf(v)
                 newPrefixList.addAll(prefixList)
                 queue.add(newPrefixList to sumOfPowers + v)
+                println("$v -> $output")
             }
         }
         if (weThereYet) break@outer
     }
 
-    val ans = queue.filter { it.first.size == 16 }.minBy { it.second }
-    ans.println()
+    queue.filter { it.first.size == 16 }.println()
 }
 
 private fun run(program: List<Long>): MutableList<Long> {
