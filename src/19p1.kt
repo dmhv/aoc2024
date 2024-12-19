@@ -14,4 +14,3 @@ private fun isPossible(pattern: String, designs: Set<String>): Boolean {
     if (prefixes.any { pattern == it }) return true
     return prefixes.any { isPossible(pattern.removePrefix(it), designs) }
 }
-

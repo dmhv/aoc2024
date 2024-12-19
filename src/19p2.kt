@@ -1,31 +1,27 @@
 fun main() {
-    val input = readInput("19tiny")
+    val input = readInput("19")
     val designs = input[0].split(", ").toSet()
     val patterns = buildSet {
         input.subList(2, input.size).forEach { line -> this.add(line) }
     }
 
-    fun numPossibilities(pattern: String): Int {
+    val cache = mutableMapOf<String, Long>()
+    fun numPossibilities(pattern: String): Long = cache.getOrPut(pattern) {
         val prefixes = designs.filter { pattern.startsWith(it) }
-        if (prefixes.isEmpty()) return 0
-        var out = 0
-        for (pr in prefixes) {
-            out += if (pattern == pr) {
-                1
-            } else {
-                numPossibilities(pattern.removePrefix(pr))
+        if (prefixes.isEmpty()) {
+            0L
+        } else {
+            var out = 0L
+            for (pr in prefixes) {
+                out += if (pattern == pr) {
+                    1L
+                } else {
+                    numPossibilities(pattern.removePrefix(pr))
+                }
             }
+            out
         }
-        return out
     }
 
-    var cnt = 0
-    for (p in patterns) {
-        val pOptions = numPossibilities(p)
-        println("$p -> $pOptions")
-        cnt += pOptions
-    }
-    cnt.println()
+    patterns.sumOf { numPossibilities(it) }.println()
 }
-
-
