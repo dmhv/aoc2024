@@ -20,17 +20,16 @@ fun main() {
 
     val compareBySteps: Comparator<Pair<Loc, Int>> = compareBy { it.second }
 
-    val (stepsStartEnd, cameFromStart) = shortestPath(compareBySteps, startLoc, endLoc, map)
-    println("Start -> End: $stepsStartEnd")
-    val pathStartEnd = getPath(endLoc, cameFromStart, startLoc)
-    val pathStartEndIndexed = pathStartEnd.withIndex().toList()
-    val pathEndStart = pathStartEnd.reversed()
+    val (stepsNoCheat, cameFromStart) = shortestPath(compareBySteps, startLoc, endLoc, map)
+    println("Start -> End: $stepsNoCheat")
+    val forward = getPath(endLoc, cameFromStart, startLoc)
+    val forwardIndexed = forward.withIndex().toList()
+    val backward = forward.reversed()
 
-    val stepsNoCheat = stepsStartEnd
     var cntShortcuts = 0L
 
-    for ((stepsFromEnd, backLoc) in pathEndStart.withIndex()) {
-        val shortcuts = pathStartEndIndexed
+    for ((stepsFromEnd, backLoc) in backward.withIndex()) {
+        val shortcuts = forwardIndexed
             .filter { (i, loc) -> closeEnough(loc, backLoc) && (stepsFromEnd + i) < stepsNoCheat - MAX_CHEAT }
         for ((stepsFromStart, forwardLoc) in shortcuts) {
             val stepsSaved = stepsNoCheat - stepsFromStart - stepsFromEnd - manhattanDistance(forwardLoc, backLoc)
