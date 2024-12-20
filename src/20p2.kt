@@ -22,29 +22,22 @@ fun main() {
 
     val (stepsStartEnd, cameFromStart) = shortestPath(compareBySteps, startLoc, endLoc, map)
     println("Start -> End: $stepsStartEnd")
-    val pathStartEnd = getPath(endLoc, cameFromStart, startLoc).withIndex().toList()
-    //pathStartEnd.println()
-
-    val (stepsEndStart, cameFromEnd) = shortestPath(compareBySteps, endLoc, startLoc, map)
-    println("End -> Start: $stepsEndStart")
-    val pathEndStart = getPath(startLoc, cameFromEnd, endLoc)
-    //pathEndStart.println()
+    val pathStartEnd = getPath(endLoc, cameFromStart, startLoc)
+    val pathStartEndIndexed = pathStartEnd.withIndex().toList()
+    val pathEndStart = pathStartEnd.reversed()
 
     val stepsNoCheat = stepsStartEnd
     var cntShortcuts = 0L
 
     for ((stepsFromEnd, backLoc) in pathEndStart.withIndex()) {
-        val shortcuts = pathStartEnd
+        val shortcuts = pathStartEndIndexed
             .filter { (i, loc) -> closeEnough(loc, backLoc) && (stepsFromEnd + i) < stepsNoCheat - MAX_CHEAT }
         for ((stepsFromStart, forwardLoc) in shortcuts) {
-            val path = pathStartEnd.take(stepsFromStart).map { it.value } +
-                    pathStartEnd.take(stepsFromEnd).map { it.value }
-            val stepsSaved = stepsNoCheat - path.size - manhattanDistance(forwardLoc, backLoc)
+            val stepsSaved = stepsNoCheat - stepsFromStart - stepsFromEnd - manhattanDistance(forwardLoc, backLoc)
             if (stepsSaved >= MIN_SAVED) {
                 cntShortcuts += 1
             }
         }
-        println("At step $stepsFromEnd from end, count of shortcuts is $cntShortcuts")
     }
     println("Total shortcuts: $cntShortcuts")
 }

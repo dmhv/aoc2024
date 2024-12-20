@@ -22,24 +22,19 @@ fun main() {
 
     val (stepsStartEnd, cameFromStart) = shortestPath(compareBySteps, startLoc, endLoc, map)
     println("Start -> End: $stepsStartEnd")
-    val pathStartEnd = getPath(endLoc, cameFromStart, startLoc).withIndex().toList()
-    //pathStartEnd.println()
-
-    val (stepsEndStart, cameFromEnd) = shortestPath(compareBySteps, endLoc, startLoc, map)
-    println("End -> Start: $stepsEndStart")
-    val pathEndStart = getPath(startLoc, cameFromEnd, endLoc)
-    //pathEndStart.println()
+    val pathStartEnd = getPath(endLoc, cameFromStart, startLoc)
+    val pathStartEndIndexed = pathStartEnd.withIndex().toList()
+    val pathEndStart = pathStartEnd.reversed()
 
     val stepsNoCheat = stepsStartEnd
     val countStepsSaved = mutableMapOf<Int, Int>()
 
     val uniquePaths = mutableSetOf<List<Loc>>()
     for ((stepsFromEnd, backLoc) in pathEndStart.withIndex()) {
-        val shortcuts = pathStartEnd
+        val shortcuts = pathStartEndIndexed
             .filter { (i, loc) -> closeEnough(loc, backLoc) && (stepsFromEnd + i) < stepsNoCheat - MAX_CHEAT }
         for ((stepsFromStart, _) in shortcuts) {
-            val path = pathStartEnd.take(stepsFromStart + 1).map { it.value } +
-                    pathStartEnd.take(stepsFromEnd).map { it.value }
+            val path = pathStartEnd.take(stepsFromStart + 1) + pathEndStart.take(stepsFromEnd)
             val stepsSaved = stepsNoCheat - path.size - 1
             if (stepsSaved >= MIN_SAVED) {
                 uniquePaths.add(path)
@@ -48,9 +43,6 @@ fun main() {
         }
     }
     println("Found ${uniquePaths.size} shortcuts in total")
-    for (key in countStepsSaved.keys.sorted()) {
-        println("-- found ${countStepsSaved[key]} shortcuts that save $key steps")
-    }
 }
 
 private fun closeEnough(head: Loc, tail: Loc): Boolean {
