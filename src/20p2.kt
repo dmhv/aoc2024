@@ -7,6 +7,27 @@ private const val MIN_SAVED = 100
 
 fun main() {
     val input = readInput("20")
+    val (map, startLoc, endLoc) = parseInput(input)
+
+    val (stepsNoCheat, cameFromStart) = shortestPath(startLoc, endLoc, map)
+    println("Start -> End: $stepsNoCheat")
+
+    val forward = getPath(endLoc, cameFromStart, startLoc)
+    val backward = forward.reversed()
+
+    var cntShortcuts = 0L
+    for ((stepsFromEnd, backLoc) in backward.withIndex()) {
+        val shortcuts = forward.withIndex()
+            .filter { (i, loc) -> loc.closeEnough(backLoc) && (stepsFromEnd + i) < stepsNoCheat - MAX_CHEAT }
+        for ((stepsFromStart, forwardLoc) in shortcuts) {
+            val stepsSaved = stepsNoCheat - stepsFromStart - stepsFromEnd - manhattanDistance(forwardLoc, backLoc)
+            if (stepsSaved >= MIN_SAVED) cntShortcuts += 1
+        }
+    }
+    println("Total shortcuts: $cntShortcuts")
+}
+
+private fun parseInput(input: List<String>): Triple<Map<Loc, Char>, Loc, Loc> {
     val map = buildMap {
         input.forEachIndexed { r, line ->
             line.forEachIndexed { c, char ->
@@ -17,33 +38,10 @@ fun main() {
 
     val startLoc = map.filter { it.value == 'S' }.keys.first()
     val endLoc = map.filter { it.value == 'E' }.keys.first()
-
-    val compareBySteps: Comparator<Pair<Loc, Int>> = compareBy { it.second }
-
-    val (stepsNoCheat, cameFromStart) = shortestPath(compareBySteps, startLoc, endLoc, map)
-    println("Start -> End: $stepsNoCheat")
-    val forward = getPath(endLoc, cameFromStart, startLoc)
-    val forwardIndexed = forward.withIndex().toList()
-    val backward = forward.reversed()
-
-    var cntShortcuts = 0L
-
-    for ((stepsFromEnd, backLoc) in backward.withIndex()) {
-        val shortcuts = forwardIndexed
-            .filter { (i, loc) -> closeEnough(loc, backLoc) && (stepsFromEnd + i) < stepsNoCheat - MAX_CHEAT }
-        for ((stepsFromStart, forwardLoc) in shortcuts) {
-            val stepsSaved = stepsNoCheat - stepsFromStart - stepsFromEnd - manhattanDistance(forwardLoc, backLoc)
-            if (stepsSaved >= MIN_SAVED) {
-                cntShortcuts += 1
-            }
-        }
-    }
-    println("Total shortcuts: $cntShortcuts")
+    return Triple(map, startLoc, endLoc)
 }
 
-private fun closeEnough(head: Loc, tail: Loc): Boolean {
-    return ((head.r - tail.r).absoluteValue + (head.c - tail.c).absoluteValue) <= MAX_CHEAT
-}
+private fun Loc.closeEnough(other: Loc) = manhattanDistance(this, other) <= MAX_CHEAT
 
 private fun manhattanDistance(head: Loc, tail: Loc): Int {
     return (head.r - tail.r).absoluteValue + (head.c - tail.c).absoluteValue
@@ -53,7 +51,7 @@ private fun getPath(
     endLoc: Loc,
     cameFromStart: Map<Loc, Loc>,
     startLoc: Loc
-): MutableList<Loc> {
+): List<Loc> {
     val pathStartEnd = mutableListOf<Loc>()
     var curr = endLoc
     while (curr in cameFromStart) {
@@ -66,11 +64,11 @@ private fun getPath(
 }
 
 private fun shortestPath(
-    compareBySteps: Comparator<Pair<Loc, Int>>,
     startLoc: Loc,
     endLoc: Loc,
     map: Map<Loc, Char>,
 ): Pair<Int, Map<Loc, Loc>> {
+    val compareBySteps: Comparator<Pair<Loc, Int>> = compareBy { it.second }
     val frontier = PriorityQueue(compareBySteps)
     frontier.add(Pair(startLoc, 0))
 
